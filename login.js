@@ -14,7 +14,10 @@ document.querySelector('.sign-up-container form').addEventListener('submit', asy
     const password = document.querySelector('.sign-up-container input[name="password"]').value
 
     try {
-        const res = await fetch('http://127.0.0.1:5000/api/signup', {
+        const API_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
+            ? 'http://127.0.0.1:5000' 
+            : window.location.origin;
+        const res = await fetch(`${API_URL}/api/signup`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ name, email, password }),
@@ -40,7 +43,10 @@ document.querySelector('.sign-in-container form').addEventListener('submit', asy
     const password = document.querySelector('.sign-in-container input[name="password"]').value
 
     try {
-        const res = await fetch('http://127.0.0.1:5000/api/login', {
+        const API_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
+            ? 'http://127.0.0.1:5000' 
+            : window.location.origin;
+        const res = await fetch(`${API_URL}/api/login`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ email, password }),

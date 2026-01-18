@@ -1,5 +1,7 @@
 // API Configuration
-const API_URL = 'http://127.0.0.1:5000/api';
+const API_URL = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') 
+    ? 'http://127.0.0.1:5000/api' 
+    : window.location.origin + '/api';
 
 // Fetch faculty cabin data from database
 async function fetchCabinDataFromDatabase() {

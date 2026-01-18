@@ -1,0 +1,829 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - KLU ONE</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #c41e3a 0%, #8b0000 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .admin-container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: white;
+            padding: 20px 30px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            color: #c41e3a;
+            font-size: 28px;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 15px;
+            position: relative;
+            z-index: 100;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            pointer-events: auto;
+            position: relative;
+            z-index: 10;
+        }
+
+        .btn-primary {
+            background: #c41e3a;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #8b0000;
+            transform: translateY(-2px);
+        }
+
+        .btn-danger {
+            background: #dc143c;
+            color: white;
+        }
+
+        .btn-success {
+            background: #28a745;
+            color: white;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            padding: 15px 30px;
+            background: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+
+        .tab-btn.active {
+            background: #c41e3a;
+            color: white;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .card {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+
+        .card h2 {
+            color: #c41e3a;
+            margin-bottom: 20px;
+            font-size: 24px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #333;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-family: 'Poppins', sans-serif;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .table-container {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        th {
+            background: #f7fafc;
+            color: #667eea;
+            font-weight: 600;
+        }
+
+        tr:hover {
+            background: #f7fafc;
+        }
+
+        .action-btns {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-sm {
+            padding: 6px 12px;
+            font-size: 14px;
+        }
+
+        .alert {
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .alert.success {
+            background: #c6f6d5;
+            color: #22543d;
+            border-left: 4px solid #48bb78;
+        }
+
+        .alert.error {
+            background: #fed7d7;
+            color: #742a2a;
+            border-left: 4px solid #f56565;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .grid-2 {
+                grid-template-columns: 1fr;
+            }
+            .header {
+                flex-direction: column;
+                gap: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-container">
+        <div class="header">
+            <h1><i class="fas fa-shield-alt"></i> Admin Dashboard</h1>
+            <div class="header-actions">
+                <a href="index.html" class="btn btn-primary"><i class="fas fa-home"></i> Home</a>
+                <button onclick="logout()" class="btn btn-danger"><i class="fas fa-sign-out-alt"></i> Logout</button>
+            </div>
+        </div>
+
+        <div class="alert" id="alert"></div>
+
+        <div class="tabs">
+            <button class="tab-btn active" onclick="switchTab('mess')"><i class="fas fa-utensils"></i> Mess Menu</button>
+            <button class="tab-btn" onclick="switchTab('cabin')"><i class="fas fa-door-open"></i> Cabin Details</button>
+        </div>
+
+        <!-- Mess Menu Management -->
+        <div id="mess-tab" class="tab-content active">
+            <div class="card">
+                <h2><i class="fas fa-plus-circle"></i> Add/Update Mess Menu</h2>
+                <form id="menuForm">
+                    <div class="grid-2">
+                        <div class="form-group">
+                            <label for="day">Day of Week</label>
+                            <select id="day" required>
+                                <option value="">Select Day</option>
+                                <option value="Monday">Monday</option>
+                                <option value="Tuesday">Tuesday</option>
+                                <option value="Wednesday">Wednesday</option>
+                                <option value="Thursday">Thursday</option>
+                                <option value="Friday">Friday</option>
+                                <option value="Saturday">Saturday</option>
+                                <option value="Sunday">Sunday</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="mealType">Meal Type</label>
+                            <select id="mealType" required>
+                                <option value="">Select Meal</option>
+                                <option value="Breakfast">Breakfast</option>
+                                <option value="Lunch">Lunch</option>
+                                <option value="Dinner">Dinner</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="items">Menu Items</label>
+                        <textarea id="items" rows="3" placeholder="e.g., Idli, Sambar, Chutney, Coffee/Tea" required></textarea>
+                    </div>
+                    <input type="hidden" id="menuId">
+                    <button type="submit" class="btn btn-success"><i class="fas fa-save"></i> Save Menu</button>
+                </form>
+            </div>
+
+            <div class="card">
+                <h2><i class="fas fa-list"></i> Current Mess Menu</h2>
+                <div class="table-container">
+                    <table id="menuTable">
+                        <thead>
+                            <tr>
+                                <th>Day</th>
+                                <th>Meal Type</th>
+                                <th>Items</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Cabin Management -->
+        <div id="cabin-tab" class="tab-content">
+            <div class="card">
+                <h2><i class="fas fa-edit"></i> Update Faculty Cabin Numbers</h2>
+                <p style="color: #666; margin-bottom: 20px;">Select department to view and update faculty cabin numbers</p>
+                <form id="cabinForm">
+                    <div class="form-group">
+                        <label for="deptSelect">Select Department</label>
+                        <select id="deptSelect" required>
+                            <option value="">-- Select Department --</option>
+                        </select>
+                    </div>
+                    <div class="form-group" id="facultySelectGroup" style="display: none;">
+                        <label for="facultySelect">Search and Select Faculty</label>
+                        <input type="text" id="facultySearchBox" placeholder="Type to search faculty name..." style="margin-bottom: 10px;">
+                        <select id="facultySelect" size="8" required style="height: 200px;">
+                            <option value="">-- Select Faculty --</option>
+                        </select>
+                    </div>
+                    <div class="form-group" id="cabinNumberGroup" style="display: none;">
+                        <label for="cabinNumberInput">Cabin/Room Number</label>
+                        <input type="text" id="cabinNumberInput" placeholder="e.g., R-403, C-101, L-709" required>
+                        <small style="color: #666; display: block; margin-top: 5px;">Enter the cabin or room number</small>
+                    </div>
+                    <div id="currentCabinInfo" style="display: none; padding: 15px; background: #f0f0f0; border-radius: 8px; margin-bottom: 20px;">
+                        <strong>Current Details:</strong>
+                        <p id="currentCabinText"></p>
+                    </div>
+                    <input type="hidden" id="cabinId">
+                    <input type="hidden" id="selectedFacultyName">
+                    <input type="hidden" id="selectedDepartment">
+                    <button type="submit" class="btn btn-success" style="display: none;" id="updateCabinBtn">
+                        <i class="fas fa-save"></i> Update Cabin Number
+                    </button>
+                </form>
+            </div>
+
+            <div class="card">
+                <h2><i class="fas fa-list"></i> All Faculty Cabins</h2>
+                <div class="table-container">
+                    <table id="cabinTable">
+                        <thead>
+                            <tr>
+                                <th>Faculty Name</th>
+                                <th>Department</th>
+                                <th>Cabin Number</th>
+                                <th>Last Updated</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = 'http://127.0.0.1:5000/api';
+
+        // Check if user is admin
+        async function checkAdminAccess() {
+            try {
+                // First check sessionStorage
+                const storedUser = sessionStorage.getItem('user');
+                if (storedUser) {
+                    const user = JSON.parse(storedUser);
+                    if (user.is_admin) {
+                        console.log('Admin access granted from sessionStorage:', user.email);
+                        return; // Allow access
+                    }
+                }
+                
+                // Then check server session with retry
+                for (let i = 0; i < 3; i++) {
+                    await new Promise(resolve => setTimeout(resolve, 200 * (i + 1)));
+                    
+                    const res = await fetch(`${API_URL}/check-session`, { credentials: 'include' });
+                    const data = await res.json();
+                    console.log('Session check response (attempt ' + (i+1) + '):', data);
+                    
+                    if (data.logged_in && data.user.is_admin) {
+                        console.log('Admin access granted from session:', data.user.email);
+                        sessionStorage.setItem('user', JSON.stringify(data.user));
+                        return; // Allow access
+                    }
+                }
+                
+                // If all retries failed
+                console.log('Access denied after 3 attempts');
+                sessionStorage.removeItem('user');
+                window.location.href = 'login.html';
+            } catch (err) {
+                console.error('Session check error:', err);
+                sessionStorage.removeItem('user');
+                window.location.href = 'login.html';
+            }
+        }
+
+        // Tab switching
+        function switchTab(tab) {
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            
+            event.target.classList.add('active');
+            document.getElementById(`${tab}-tab`).classList.add('active');
+            
+            if (tab === 'mess') loadMenus();
+            if (tab === 'cabin') loadCabins();
+        }
+
+        // Show alert
+        function showAlert(message, type) {
+            const alert = document.getElementById('alert');
+            alert.textContent = message;
+            alert.className = `alert ${type}`;
+            alert.style.display = 'block';
+            setTimeout(() => alert.style.display = 'none', 5000);
+        }
+
+        // ========== MESS MENU FUNCTIONS ==========
+
+        async function loadMenus() {
+            try {
+                const res = await fetch(`${API_URL}/mess/menu`);
+                const data = await res.json();
+                const tbody = document.querySelector('#menuTable tbody');
+                tbody.innerHTML = '';
+                
+                data.menus.forEach(menu => {
+                    tbody.innerHTML += `
+                        <tr>
+                            <td>${menu.day}</td>
+                            <td>${menu.meal_type}</td>
+                            <td>${menu.items}</td>
+                            <td class="action-btns">
+                                <button class="btn btn-primary btn-sm" onclick="editMenu(${menu.id})">
+                                    <i class="fas fa-edit"></i> Edit
+                                </button>
+                                <button class="btn btn-danger btn-sm" onclick="deleteMenu(${menu.id})">
+                                    <i class="fas fa-trash"></i> Delete
+                                </button>
+                            </td>
+                        </tr>
+                    `;
+                });
+            } catch (err) {
+                showAlert('Failed to load menus', 'error');
+            }
+        }
+
+        document.getElementById('menuForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const menuId = document.getElementById('menuId').value;
+            const data = {
+                day: document.getElementById('day').value,
+                meal_type: document.getElementById('mealType').value,
+                items: document.getElementById('items').value
+            };
+
+            try {
+                let res;
+                if (menuId) {
+                    res = await fetch(`${API_URL}/admin/mess/menu/${menuId}`, {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(data),
+                        credentials: 'include'
+                    });
+                } else {
+                    res = await fetch(`${API_URL}/admin/mess/menu`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(data),
+                        credentials: 'include'
+                    });
+                }
+
+                const result = await res.json();
+                if (res.ok) {
+                    showAlert(result.message, 'success');
+                    document.getElementById('menuForm').reset();
+                    document.getElementById('menuId').value = '';
+                    loadMenus();
+                } else {
+                    showAlert(result.error, 'error');
+                }
+            } catch (err) {
+                showAlert('Operation failed', 'error');
+            }
+        });
+
+        async function editMenu(id) {
+            const res = await fetch(`${API_URL}/mess/menu`);
+            const data = await res.json();
+            const menu = data.menus.find(m => m.id === id);
+            
+            document.getElementById('menuId').value = menu.id;
+            document.getElementById('day').value = menu.day;
+            document.getElementById('mealType').value = menu.meal_type;
+            document.getElementById('items').value = menu.items;
+            window.scrollTo(0, 0);
+        }
+
+        async function deleteMenu(id) {
+            if (!confirm('Delete this menu?')) return;
+            
+            try {
+                const res = await fetch(`${API_URL}/admin/mess/menu/${id}`, {
+                    method: 'DELETE',
+                    credentials: 'include'
+                });
+                const data = await res.json();
+                showAlert(data.message, 'success');
+                loadMenus();
+            } catch (err) {
+                showAlert('Delete failed', 'error');
+            }
+        }
+
+        // ========== CABIN FUNCTIONS ==========
+
+        // Load faculty data from cabin.js
+        let facultyDatabase = [];
+        const departmentMap = {}; // Group faculty by department
+
+        // Populate departments dropdown from cabin.js
+        async function populateDepartments() {
+            const deptSelect = document.getElementById('deptSelect');
+            
+            try {
+                // First, load cabin.js to get the full faculty structure
+                const cabinJsResponse = await fetch('cabin.js');
+                const cabinJsText = await cabinJsResponse.text();
+                
+                // Extract hodData array from cabin.js
+                const match = cabinJsText.match(/let hodData = \[([\s\S]*?)\];/);
+                if (!match) {
+                    throw new Error('Could not parse cabin.js');
+                }
+                
+                // Parse the hodData using eval (in a safe context)
+                const hodDataCode = 'var hodData = [' + match[1] + ']; hodData;';
+                facultyDatabase = eval(hodDataCode);
+                
+                console.log('Loaded faculty structure:', facultyDatabase.length, 'departments');
+                
+                // Now load cabin numbers from database to merge
+                const apiResponse = await fetch(`${API_URL}/cabins`, { credentials: 'include' });
+                const apiData = await apiResponse.json();
+                
+                // Create a map of existing cabin numbers
+                const cabinNumberMap = {};
+                if (apiData.cabins && apiData.cabins.length > 0) {
+                    apiData.cabins.forEach(cabin => {
+                        const key = cabin.department + '|' + cabin.faculty_name;
+                        cabinNumberMap[key] = cabin.cabin_number;
+                    });
+                }
+                
+                // Build departmentMap with all faculty from cabin.js
+                facultyDatabase.forEach(dept => {
+                    departmentMap[dept.department] = [];
+                    
+                    // Add HOD
+                    if (dept.name) {
+                        const hodKey = dept.department + '|' + dept.name;
+                        departmentMap[dept.department].push({
+                            name: dept.name,
+                            cabin: cabinNumberMap[hodKey] || dept.cabin || '',
+                            isHOD: true
+                        });
+                    }
+                    
+                    // Add all faculty
+                    if (dept.facultyList && dept.facultyList.length > 0) {
+                        dept.facultyList.forEach(faculty => {
+                            const facultyKey = dept.department + '|' + faculty.name;
+                            departmentMap[dept.department].push({
+                                name: faculty.name,
+                                cabin: cabinNumberMap[facultyKey] || faculty.cabin || faculty.room || '',
+                                room: faculty.room || faculty.cabin || '',
+                                designation: faculty.designation || 'Faculty',
+                                isHOD: false
+                            });
+                        });
+                    }
+                });
+                
+                // Populate department dropdown
+                const departments = Object.keys(departmentMap).sort();
+                departments.forEach(dept => {
+                    const option = document.createElement('option');
+                    option.value = dept;
+                    option.textContent = dept;
+                    deptSelect.appendChild(option);
+                });
+                
+                console.log('Department dropdown populated with', departments.length, 'departments');
+                console.log('Total faculty loaded:', Object.values(departmentMap).reduce((sum, list) => sum + list.length, 0));
+                
+            } catch (err) {
+                console.error('Error loading faculty data:', err);
+                showAlert('Failed to load faculty data: ' + err.message, 'error');
+            }
+        }
+
+        // Setup event listeners
+        function setupCabinEventListeners() {
+            console.log('Setting up cabin event listeners...');
+            
+            const deptSelect = document.getElementById('deptSelect');
+            const facultySelect = document.getElementById('facultySelect');
+            const facultySearchBox = document.getElementById('facultySearchBox');
+            let allFacultyOptions = [];
+            
+            if (!deptSelect || !facultySelect) {
+                console.error('Cabin form elements not found');
+                return;
+            }
+            
+            // Department selection handler
+            deptSelect.addEventListener('change', function() {
+                console.log('Department changed:', this.value);
+                const selectedDept = this.value;
+                const facultySelectGroup = document.getElementById('facultySelectGroup');
+                
+                facultySelect.innerHTML = '<option value="">-- Select Faculty --</option>';
+                facultySearchBox.value = '';
+                document.getElementById('cabinNumberGroup').style.display = 'none';
+                document.getElementById('currentCabinInfo').style.display = 'none';
+                document.getElementById('updateCabinBtn').style.display = 'none';
+            
+                if (selectedDept && departmentMap[selectedDept]) {
+                    // Store all faculty for filtering
+                    allFacultyOptions = departmentMap[selectedDept];
+                    
+                    // Populate faculty list
+                    allFacultyOptions.forEach(faculty => {
+                        const option = document.createElement('option');
+                        option.value = JSON.stringify(faculty);
+                        const hodLabel = faculty.isHOD ? ' [HOD]' : '';
+                        const designation = faculty.designation ? ' - ' + faculty.designation : '';
+                        const roomInfo = faculty.room ? ' (Room: ' + faculty.room + ')' : '';
+                        option.textContent = faculty.name + hodLabel + designation + roomInfo;
+                        facultySelect.appendChild(option);
+                    });
+                    
+                    facultySelectGroup.style.display = 'block';
+                    console.log('Loaded', allFacultyOptions.length, 'faculty for', selectedDept);
+                } else {
+                    facultySelectGroup.style.display = 'none';
+                    allFacultyOptions = [];
+                }
+            });
+
+            // Faculty search box handler
+            facultySearchBox.addEventListener('input', function() {
+                const searchTerm = this.value.toLowerCase();
+                facultySelect.innerHTML = '<option value="">-- Select Faculty --</option>';
+                
+                const filteredFaculty = allFacultyOptions.filter(faculty => 
+                    faculty.name.toLowerCase().includes(searchTerm)
+                );
+                
+                filteredFaculty.forEach(faculty => {
+                    const option = document.createElement('option');
+                    option.value = JSON.stringify(faculty);
+                    const hodLabel = faculty.isHOD ? ' [HOD]' : '';
+                    const designation = faculty.designation ? ' - ' + faculty.designation : '';
+                    const roomInfo = faculty.room ? ' (Room: ' + faculty.room + ')' : '';
+                    option.textContent = faculty.name + hodLabel + designation + roomInfo;
+                    facultySelect.appendChild(option);
+                });
+                
+                console.log('Filtered to', filteredFaculty.length, 'faculty members');
+            });
+
+            // Faculty selection handler
+            facultySelect.addEventListener('change', function() {
+                console.log('Faculty selected:', this.value);
+                const cabinNumberGroup = document.getElementById('cabinNumberGroup');
+                const currentCabinInfo = document.getElementById('currentCabinInfo');
+                const currentCabinText = document.getElementById('currentCabinText');
+                const updateBtn = document.getElementById('updateCabinBtn');
+                
+                if (this.value) {
+                    const facultyData = JSON.parse(this.value);
+                    const selectedDept = document.getElementById('deptSelect').value;
+                    
+                    document.getElementById('selectedFacultyName').value = facultyData.name;
+                    document.getElementById('selectedDepartment').value = selectedDept;
+                    document.getElementById('cabinId').value = facultyData.id || '';
+                    
+                    // Extract block and floor from cabin number
+                    const cabinNum = facultyData.cabin || 'Not Set';
+                    let block = 'N/A';
+                    let floor = 'N/A';
+                    
+                    if (cabinNum && cabinNum !== 'Not Set' && cabinNum !== '') {
+                        // Extract block (first letter: R, L, C, etc.)
+                        const blockMatch = cabinNum.match(/^([A-Z])/);
+                        if (blockMatch) block = blockMatch[1];
+                        
+                        // Extract floor (first digit after letter or dash)
+                        const floorMatch = cabinNum.match(/[-]?(\d)/);
+                        if (floorMatch) floor = floorMatch[1];
+                    }
+                    
+                    currentCabinText.innerHTML = '<strong>Name:</strong> ' + facultyData.name + '<br>' +
+                        '<strong>Department:</strong> ' + selectedDept + '<br>' +
+                        '<strong>Designation:</strong> ' + (facultyData.designation || 'Faculty') + 
+                        (facultyData.isHOD ? ' (HOD)' : '') + '<br>' +
+                        '<strong>Current Cabin:</strong> ' + cabinNum + '<br>' +
+                        '<strong>Block:</strong> ' + block + '<br>' +
+                        '<strong>Floor:</strong> ' + floor;
+                    
+                    document.getElementById('cabinNumberInput').value = facultyData.cabin || '';
+                    cabinNumberGroup.style.display = 'block';
+                    currentCabinInfo.style.display = 'block';
+                    updateBtn.style.display = 'inline-flex';
+                } else {
+                    cabinNumberGroup.style.display = 'none';
+                    currentCabinInfo.style.display = 'none';
+                    updateBtn.style.display = 'none';
+                }
+            });
+            
+            console.log('Cabin event listeners set up successfully');
+        }
+
+        async function loadCabins() {
+            try {
+                const res = await fetch(`${API_URL}/cabins`);
+                const data = await res.json();
+                const tbody = document.querySelector('#cabinTable tbody');
+                tbody.innerHTML = '';
+                
+                data.cabins.forEach(cabin => {
+                    const date = new Date(cabin.last_updated);
+                    tbody.innerHTML += `
+                        <tr>
+                            <td>${cabin.faculty_name}</td>
+                            <td>${cabin.department}</td>
+                            <td><strong>${cabin.cabin_number}</strong></td>
+                            <td>${date.toLocaleDateString()}</td>
+                        </tr>
+                    `;
+                });
+            } catch (err) {
+                showAlert('Failed to load cabins', 'error');
+            }
+        }
+
+        document.getElementById('cabinForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const cabinNum = document.getElementById('cabinNumberInput').value;
+            let block = '';
+            if (cabinNum && cabinNum !== 'Not Set' && cabinNum !== '') {
+                const blockMatch = cabinNum.match(/^([A-Z])/);
+                if (blockMatch) block = blockMatch[1];
+            }
+            
+            const data = {
+                faculty_name: document.getElementById('selectedFacultyName').value,
+                department: document.getElementById('selectedDepartment').value,
+                cabin_number: cabinNum,
+                block: block
+            };
+
+            try {
+                const res = await fetch(`${API_URL}/admin/cabins`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data),
+                    credentials: 'include'
+                });
+
+                const result = await res.json();
+                if (res.ok) {
+                    showAlert('Cabin number updated for ' + data.faculty_name, 'success');
+                    document.getElementById('cabinForm').reset();
+                    document.getElementById('facultySelectGroup').style.display = 'none';
+                    document.getElementById('cabinNumberGroup').style.display = 'none';
+                    document.getElementById('currentCabinInfo').style.display = 'none';
+                    document.getElementById('updateCabinBtn').style.display = 'none';
+                    loadCabins();
+                } else {
+                    showAlert(result.error, 'error');
+                }
+            } catch (err) {
+                showAlert('Operation failed: ' + err.message, 'error');
+            }
+        });
+
+        // Switch tabs
+        function switchTab(tab) {
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            
+            event.target.classList.add('active');
+            document.getElementById(tab + '-tab').classList.add('active');
+        }
+
+        async function logout() {
+            try {
+                await fetch(`${API_URL}/logout`, { 
+                    method: 'POST',
+                    credentials: 'include' 
+                });
+                window.location.href = 'login.html';
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        // Initialize
+        checkAdminAccess();
+        loadMenus();
+        setupCabinEventListeners();
+        populateDepartments();
+    </script>
+</body>
+</html>

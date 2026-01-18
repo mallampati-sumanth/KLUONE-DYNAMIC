@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
+  <script src="cabin.js"></script>
+  <title>ONE TRANSPORT</title>
+</head>
+<body class="bg-gray-50">
+  <header class="bg-red-600 text-white p-4 flex flex-col items-center relative">
+    <!-- Logo -->
+    <img src="https://assets.onecompiler.app/42fq36qvd/42zbsafhz/Screenshot%202024-11-27%20111356.png" alt="University Logo" class="w-12 h-12 mb-3">
+    
+    <!-- Text Content -->
+    <div class="text-center">
+      <h1 class="text-2xl font-bold">ONE Transport</h1>
+      <p class="text-sm mt-1">View and explore transport information for various shifts and routes.<b>(deviations may occur)</b></p>
+    </div>
+    
+    <!-- Back Button -->
+    <a href="index.html" id="homeButton" class="p-2 hover:bg-red-700 rounded-full mt-4" title="Go to Home">
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+        <polyline points="9 22 9 12 15 12 15 22"/>
+      </svg>
+    </a>
+    <button id="backButton" class="p-2 hover:bg-red-700 rounded-full mt-2 hidden">
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="m15 18-6-6 6-6"/>
+      </svg>
+    </button>
+  </header>
+
+  <main class="container mx-auto p-4 max-w-2xl">
+    <!-- Shifts List View -->
+    <div id="shiftsView" class="space-y-3">
+      <div class="aspect-video rounded-lg overflow-hidden mb-6">
+        <img src="https://images.unsplash.com/photo-1570125909232-eb263c188f7e?w=800&auto=format&fit=crop&q=80" 
+             alt="Transport banner" 
+             class="w-full h-full object-cover">
+      </div>
+      <div id="shiftsList" class="space-y-3"></div>
+    </div>
+
+    <!-- Route Details View -->
+    <div id="routeView" class="hidden">
+      <div id="routeTabs" class="flex gap-2 overflow-x-auto pb-4"></div>
+      <div id="routeStops" class="space-y-4 mt-4"></div>
+    </div>
+  </main>
+    <script>
+        const shifts = [
+    {
+        id: 'vijayawada-morning',
+        name: 'VIJAYAWADA MORNING SHIFT',
+        routes: [
+            {
+                id: '1A',
+                name: 'Route 1A',
+                stops: [
+                    { name: 'KCP Quarters', time: '05:40 AM' },
+                    { name: 'Vuyyuru Bus Stand', time: '06:00 AM' },
+                    { name: 'Vuyyuru Centre', time: '06:15 AM' },
+                    { name: 'Gannavaram', time: '06:45 AM' },
+                    { name: 'Ramavarappadu', time: '07:15 AM' }
+                ]
+            },
+            {
+                id: '1B',
+                name: 'Route 1B',
+                stops: [
+                    { name: 'Currency Nagar', time: '05:45 AM' },
+                    { name: 'Benz Circle', time: '06:00 AM' },
+                    { name: 'Nirmala Convent', time: '06:20 AM' },
+                    { name: 'Christurajupuram', time: '06:40 AM' }
+                ]
+            },
+            {
+                id: '1C',
+                name: 'Route 1C',
+                stops: [
+                    { name: 'KCP Quarters', time: '06:00 AM' },
+                    { name: 'Vuyyuru Bus Stand', time: '06:20 AM' },
+                    { name: 'Gannavaram', time: '06:40 AM' },
+                    { name: 'Ramavarappadu', time: '07:10 AM' }
+                ]
+            },
+            {
+                id: '1D',
+                name: 'Route 1D',
+                stops: [
+                    { name: 'Ramavarappadu', time: '06:30 AM' },
+                    { name: 'Gannavaram', time: '06:50 AM' },
+                    { name: 'Vuyyuru Centre', time: '07:10 AM' },
+                    { name: 'Vuyyuru Bus Stand', time: '07:30 AM' }
+                ]
+            },
+            {
+                id: '1E',
+                name: 'Route 1E',
+                stops: [
+                    { name: 'Benz Circle', time: '06:15 AM' },
+                    { name: 'Nirmala Convent', time: '06:30 AM' },
+                    { name: 'Christurajupuram', time: '06:50 AM' },
+                    { name: 'Currency Nagar', time: '07:05 AM' }
+                ]
+            },
+            {
+                id: '1F',
+                name: 'Route 1F',
+                stops: [
+                    { name: 'Vuyyuru Bus Stand', time: '06:45 AM' },
+                    { name: 'Gannavaram', time: '07:05 AM' },
+                    { name: 'Ramavarappadu', time: '07:25 AM' },
+                    { name: 'KCP Quarters', time: '07:45 AM' }
+                ]
+            },
+            {
+                id: '1G',
+                name: 'Route 1G',
+                stops: [
+                    { name: 'Vuyyuru Centre', time: '06:00 AM' },
+                    { name: 'Gannavaram', time: '06:25 AM' },
+                    { name: 'Vuyyuru Bus Stand', time: '06:50 AM' },
+                    { name: 'KCP Quarters', time: '07:10 AM' }
+                ]
+            }
+        ]
+    },
+    {
+        id: 'guntur-morning',
+        name: 'GUNTUR MORNING SHIFT',
+        routes: [
+            {
+                id: '2A',
+                name: 'Route 2A',
+                stops: [
+                    { name: 'Guntur Bus Stand', time: '05:30 AM' },
+                    { name: 'Lakshmipuram', time: '05:50 AM' },
+                    { name: 'Stambalagaruvu', time: '06:10 AM' },
+                    { name: 'Nallapadu', time: '06:30 AM' }
+                ]
+            },
+            {
+                id: '2B',
+                name: 'Route 2B',
+                stops: [
+                    { name: 'Guntur Bus Stand', time: '06:00 AM' },
+                    { name: 'Lakshmipuram', time: '06:20 AM' },
+                    { name: 'Stambalagaruvu', time: '06:40 AM' },
+                    { name: 'Nallapadu', time: '07:00 AM' }
+                ]
+            },
+            {
+                id: '2C',
+                name: 'Route 2C',
+                stops: [
+                    { name: 'Guntur Bus Stand', time: '06:15 AM' },
+                    { name: 'Lakshmipuram', time: '06:35 AM' },
+                    { name: 'Stambalagaruvu', time: '06:55 AM' },
+                    { name: 'Nallapadu', time: '07:15 AM' }
+                ]
+            },
+            {
+                id: '2D',
+                name: 'Route 2D',
+                stops: [
+                    { name: 'Guntur Bus Stand', time: '06:30 AM' },
+                    { name: 'Lakshmipuram', time: '06:50 AM' },
+                    { name: 'Stambalagaruvu', time: '07:10 AM' },
+                    { name: 'Nallapadu', time: '07:30 AM' }
+                ]
+            },
+            {
+                id: '2E',
+                name: 'Route 2E',
+                stops: [
+                    { name: 'Guntur Bus Stand', time: '07:00 AM' },
+                    { name: 'Lakshmipuram', time: '07:20 AM' },
+                    { name: 'Stambalagaruvu', time: '07:40 AM' },
+                    { name: 'Nallapadu', time: '08:00 AM' }
+                ]
+            },
+            {
+                id: '2F',
+                name: 'Route 2F',
+                stops: [
+                    { name: 'Guntur Bus Stand', time: '07:10 AM' },
+                    { name: 'Lakshmipuram', time: '07:30 AM' },
+                    { name: 'Stambalagaruvu', time: '07:50 AM' },
+                    { name: 'Nallapadu', time: '08:10 AM' }
+                ]
+            },
+            {
+                id: '2G',
+                name: 'Route 2G',
+                stops: [
+                    { name: 'Guntur Bus Stand', time: '07:30 AM' },
+                    { name: 'Lakshmipuram', time: '07:50 AM' },
+                    { name: 'Stambalagaruvu', time: '08:10 AM' },
+                    { name: 'Nallapadu', time: '08:30 AM' }
+                ]
+            }
+        ]
+    },
+    {
+        id: 'tenali-morning',
+        name: 'TENALI MORNING SHIFT',
+        routes: [
+            {
+            id: '9A',
+            name: 'Route 9-A',
+            stops: [
+                { name: 'Chinnaravuri Park', time: '05:40 AM' },
+                { name: 'Swaraj Talkies', time: '' },
+                { name: 'Bilal Hotel', time: '' }
+            ]
+        },
+        {
+            id: '9B',
+            name: 'Route 9-B',
+            stops: [
+                { name: 'Montessori', time: '05:40 AM' },
+                { name: 'Sivaji Bomma', time: '' },
+                { name: 'ASN College', time: '' }
+            ]
+        },
+        {
+            id: '9C',
+            name: 'Route 9-C',
+            stops: [
+                { name: 'Angalakuduru', time: '05:40 AM' },
+                { name: 'Sultanabad', time: '' },
+                { name: 'Chenchupeta', time: '' },
+                { name: 'Railway Station Road', time: '' }
+            ]
+        },
+        {
+            id: '9D',
+            name: 'Route 9-D',
+            stops: [
+                { name: 'Bus Stand', time: '05:50 AM' },
+                { name: 'VSR & NVR College', time: '' },
+                { name: 'Katevaram', time: '' },
+                { name: 'Somasundarapalem', time: '' },
+                { name: 'Nandivelagu X Roads', time: '' },
+                { name: 'Chintalapudi', time: '' },
+                { name: 'Duggirala Lakulu', time: '' },
+                { name: 'Duggirala HP Gas Agency', time: '' },
+                { name: 'CCL Factory', time: '' },
+                { name: 'Tummapudi', time: '' },
+                { name: 'Revendrapadu Vanthena', time: '' },
+                { name: 'Pedavadlapudi Centre', time: '' },
+                { name: 'Atmakur By Pass', time: '' }
+                ]
+            },
+            {
+                id: '2F',
+                name: 'Route 2F',
+                stops: [
+                    { name: 'Guntur Bus Stand', time: '07:10 AM' },
+                    { name: 'Lakshmipuram', time: '07:30 AM' },
+                    { name: 'Stambalagaruvu', time: '07:50 AM' },
+                    { name: 'Nallapadu', time: '08:10 AM' }
+                ]
+            },
+            {
+                id: '2G',
+                name: 'Route 2G',
+                stops: [
+                    { name: 'Guntur Bus Stand', time: '07:30 AM' },
+                    { name: 'Lakshmipuram', time: '07:50 AM' },
+                    { name: 'Stambalagaruvu', time: '08:10 AM' },
+                    { name: 'Nallapadu', time: '08:30 AM' }
+                ]
+            }
+        ]
+    },
+    {
+        id: 'thullur-morning',
+        name: 'THULLUR MORNING SHIFT',
+        routes: [
+            {
+            id: 'thullur-1',
+            name: 'Route 1',
+            stops: [
+                { name: 'Thullur', time: '05:50 AM' },
+                { name: 'Dondapadu', time: '' },
+                { name: 'Thulluru Tidko Houses', time: '' },
+                { name: 'Thulluru', time: '' },
+                { name: 'Rayapudi', time: '' },
+                { name: 'High Court Road', time: '' },
+                { name: 'Modilingaya Palem', time: '' },
+                { name: 'Velagapudi', time: '' },
+                { name: 'Malkapuram', time: '' },
+                { name: 'Mandadam', time: '' },
+                { name: 'Venkatapalem X Road', time: '' },
+                { name: 'Krishnayapalem', time: '' },
+                { name: 'Penumaka Boddu Rai Centre', time: '' },
+                { name: 'Undavalli Village', time: '' },
+                { name: 'Undavalli Centre', time: '' },
+                { name: 'Sitanagaram Work Shop', time: '' },
+                { name: 'Tadepalli Boys Hostel', time: '' },
+                
+                
+                ]
+            }
+        ]
+    },
+    {
+        id: 'vijayawada-general',
+        name: 'VIJAYAWADA GENERAL SHIFT',
+        routes: [
+            {
+                id: '2A',
+                name: 'Route 2A',
+                stops: [
+                    { name: 'Guntur Bus Stand', time: '05:30 AM' },
+                    { name: 'Lakshmipuram', time: '05:50 AM' },
+                    { name: 'Stambalagaruvu', time: '06:10 AM' },
+                    { name: 'Nallapadu', time: '06:30 AM' }
+                ]
+            },
+            {
+                id: '2B',
+                name: 'Route 2B',
+                stops: [
+                    { name: 'Guntur Bus Stand', time: '06:00 AM' },
+                    { name: 'Lakshmipuram', time: '06:20 AM' },
+                    { name: 'Stambalagaruvu', time: '06:40 AM' },
+                    { name: 'Nallapadu', time: '07:00 AM' }
+                ]
+            },
+            {
+                id: '2C',
+                name: 'Route 2C',
+                stops: [
+                    { name: 'Guntur Bus Stand', time: '06:15 AM' },
+                    { name: 'Lakshmipuram', time: '06:35 AM' },
+                    { name: 'Stambalagaruvu', time: '06:55 AM' },
+                    { name: 'Nallapadu', time: '07:15 AM' }
+                ]
+            },
+            {
+                id: '2D',
+                name: 'Route 2D',
+                stops: [
+                    { name: 'Guntur Bus Stand', time: '06:30 AM' },
+                    { name: 'Lakshmipuram', time: '06:50 AM' },
+                    { name: 'Stambalagaruvu', time: '07:10 AM' },
+                    { name: 'Nallapadu', time: '07:30 AM' }
+                ]
+            },
+            {
+                id: '2E',
+                name: 'Route 2E',
+                stops: [
+                    { name: 'Guntur Bus Stand', time: '07:00 AM' },
+                    { name: 'Lakshmipuram', time: '07:20 AM' },
+                    { name: 'Stambalagaruvu', time: '07:40 AM' },
+                    { name: 'Nallapadu', time: '08:00 AM' }
+                ]
+            },
+            {
+                id: '2F',
+                name: 'Route 2F',
+                stops: [
+                    { name: 'Guntur Bus Stand', time: '07:10 AM' },
+                    { name: 'Lakshmipuram', time: '07:30 AM' },
+                    { name: 'Stambalagaruvu', time: '07:50 AM' },
+                    { name: 'Nallapadu', time: '08:10 AM' }
+                ]
+            },
+            {
+                id: '2G',
+                name: 'Route 2G',
+                stops: [
+                    { name: 'Guntur Bus Stand', time: '07:30 AM' },
+                    { name: 'Lakshmipuram', time: '07:50 AM' },
+                    { name: 'Stambalagaruvu', time: '08:10 AM' },
+                    { name: 'Nallapadu', time: '08:30 AM' }
+                ]
+            }
+        ]
+    },
+    {
+        id: 'guntur-general',
+        name: 'GUNTUR GENERAL SHIFT',
+        routes: [
+            {
+                id: '2A',
+                name: 'Route 2A',
+                stops: [
+                    { name: 'Guntur Bus Stand', time: '05:30 AM' },
+                    { name: 'Lakshmipuram', time: '05:50 AM' },
+                    { name: 'Stambalagaruvu', time: '06:10 AM' },
+                    { name: 'Nallapadu', time: '06:30 AM' }
+                ]
+            },
+            {
+                id: '2B',
+                name: 'Route 2B',
+                stops: [
+                    { name: 'Guntur Bus Stand', time: '06:00 AM' },
+                    { name: 'Lakshmipuram', time: '06:20 AM' },
+                    { name: 'Stambalagaruvu', time: '06:40 AM' },
+                    { name: 'Nallapadu', time: '07:00 AM' }
+                ]
+            },
+            {
+                id: '2C',
+                name: 'Route 2C',
+                stops: [
+                    { name: 'Guntur Bus Stand', time: '06:15 AM' },
+                    { name: 'Lakshmipuram', time: '06:35 AM' },
+                    { name: 'Stambalagaruvu', time: '06:55 AM' },
+                    { name: 'Nallapadu', time: '07:15 AM' }
+                ]
+            },
+            {
+                id: '2D',
+                name: 'Route 2D',
+                stops: [
+                    { name: 'Guntur Bus Stand', time: '06:30 AM' },
+                    { name: 'Lakshmipuram', time: '06:50 AM' },
+                    { name: 'Stambalagaruvu', time: '07:10 AM' },
+                    { name: 'Nallapadu', time: '07:30 AM' }
+                ]
+            },
+            {
+                id: '2E',
+                name: 'Route 2E',
+                stops: [
+                    { name: 'Guntur Bus Stand', time: '07:00 AM' },
+                    { name: 'Lakshmipuram', time: '07:20 AM' },
+                    { name: 'Stambalagaruvu', time: '07:40 AM' },
+                    { name: 'Nallapadu', time: '08:00 AM' }
+                ]
+            },
+            {
+                id: '2F',
+                name: 'Route 2F',
+                stops: [
+                    { name: 'Guntur Bus Stand', time: '07:10 AM' },
+                    { name: 'Lakshmipuram', time: '07:30 AM' },
+                    { name: 'Stambalagaruvu', time: '07:50 AM' },
+                    { name: 'Nallapadu', time: '08:10 AM' }
+                ]
+            },
+            {
+                id: '2G',
+                name: 'Route 2G',
+                stops: [
+                    { name: 'Guntur Bus Stand', time: '07:30 AM' },
+                    { name: 'Lakshmipuram', time: '07:50 AM' },
+                    { name: 'Stambalagaruvu', time: '08:10 AM' },
+                    { name: 'Nallapadu', time: '08:30 AM' }
+                ]
+            }
+        ]
+    },
+    {
+        id: 'tenali-general',
+        name: 'TENALI GENERAL SHIFT',
+       routes: [
+            {
+            id: '9A',
+            name: 'Route 9-A',
+            stops: [
+                { name: 'Chinnaravuri Park', time: '07:30 AM' },
+                { name: 'Sai Baba Temple (Swaraj Theatre)', time: '' },
+                { name: 'Bilal Hotel (Kotha Vanthena)', time: '' },
+                { name: 'KL University', time: '' }
+            ]
+        },
+        {
+            id: '9B',
+            name: 'Route 9-B',
+            stops: [
+                { name: 'Montessori (Krishna Temple)', time: '07:30 AM' },
+                { name: 'Round Centre (Sivaji Bomma)', time: '' },
+                { name: 'KL University', time: '' }
+            ]
+        },
+        {
+            id: '9C',
+            name: 'Route 9-C',
+            stops: [
+                { name: 'Angalakuduru', time: '07:25 AM' },
+                { name: 'Sultana Bad', time: '' },
+                { name: 'Govt. Hospital', time: '' },
+                { name: 'Donka Road', time: '' },
+                { name: 'Chenchu pet', time: '' },
+                { name: 'Station Road', time: '' },
+                { name: 'KL University', time: '' }
+            ]
+        },
+        {
+            id: '9D',
+            name: 'Route 9-D',
+            stops: [
+                { name: 'Aitha Nagar', time: '07:30 AM' },
+                { name: 'SBI', time: '' },
+                { name: 'A.S.N. College (Chakali Cheruvu)', time: '' },
+                { name: 'Samrat Hotel', time: '' },
+                { name: 'KL University', time: '' }
+            ]
+        },
+        {
+            id: '9E',
+            name: 'Route 9-E',
+            stops: [
+                { name: 'Bus Stand', time: '07:30 AM' },
+                { name: 'VSR College', time: '' },
+                { name: 'Jashuva Nagar', time: '' },
+                { name: 'Katevaram', time: '' },
+                { name: 'Nandivelugu', time: '' },
+                { name: 'Chinthalapudi', time: '' },
+                { name: 'Duggirala (Cinema Hall)', time: '' },
+                { name: 'Coffee Factory', time: '' },
+                { name: 'Mormapudi', time: '' },
+                { name: 'Tummapudi', time: '' },
+                { name: 'KL University', time: '' }
+            ]
+        },
+        {
+            id: '9E1',
+            name: 'Route 9-E1',
+            stops: [
+                { name: 'Revendrapadu', time: '08:10 AM' },
+                { name: 'Pedavadlapudi', time: '' },
+                { name: 'Atmakur Bye pass', time: '' },
+                { name: 'KL University', time: '' }
+                ]
+            }
+        ]
+    }
+];
+
+
+        let currentShift = null;
+
+        function renderShiftsList() {
+            const shiftsList = document.getElementById('shiftsList');
+            shiftsList.innerHTML = shifts.map(shift => `
+                <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 cursor-pointer hover:bg-gray-50 transition-colors"
+                     onclick="showShift('${shift.id}')">
+                    <div class="flex items-center gap-3">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-blue-600">
+                            <path d="M8 6h12"/>
+                            <path d="M2 6h2"/>
+                            <path d="M2 12h2"/>
+                            <path d="M8 12h12"/>
+                            <path d="M2 18h2"/>
+                            <path d="M8 18h12"/>
+                        </svg>
+                        <span class="font-medium">${shift.name}</span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function showShift(shiftId) {
+    currentShift = shifts.find(s => s.id === shiftId);
+    document.getElementById('shiftsView').classList.add('hidden');
+    document.getElementById('routeView').classList.remove('hidden');
+    document.getElementById('backButton').classList.remove('hidden');
+    renderRoutes();
+}
+
+function renderRoutes() {
+    const routeTabs = document.getElementById('routeTabs');
+    routeTabs.innerHTML = currentShift.routes.map((route, index) => `
+        <button onclick="showRoute('${route.id}')"
+                id="tab-${route.id}"
+                class="flex items-center gap-2 px-4 py-2 rounded-md ${index === 0 ? 'bg-red-600 text-white' : 'bg-gray-100 text-gray-700'}">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M8 6h12"/>
+                <path d="M2 6h2"/>
+                <path d="M2 12h2"/>
+                <path d="M8 12h12"/>
+                <path d="M2 18h2"/>
+                <path d="M8 18h12"/>
+            </svg>
+            ${route.name}
+        </button>
+    `).join('');
+    showRoute(currentShift.routes[0].id);
+}
+
+function showRoute(routeId) {
+    const route = currentShift.routes.find(r => r.id === routeId);
+
+    // Update tabs
+    currentShift.routes.forEach(r => {
+        const tab = document.getElementById(`tab-${r.id}`);
+        if (r.id === routeId) {
+            tab.classList.remove('bg-gray-100', 'text-gray-700');
+            tab.classList.add('bg-red-600', 'text-white');
+        } else {
+            tab.classList.remove('bg-red-600', 'text-white');
+            tab.classList.add('bg-gray-100', 'text-gray-700');
+        }
+    });
+
+    // Render stops
+    const routeStops = document.getElementById('routeStops');
+    routeStops.innerHTML = route.stops.map((stop, index) => `
+        <div class="flex items-start gap-4">
+            <div class="flex flex-col items-center">
+                <div class="w-3 h-3 bg-red-600 rounded-full"></div>
+                ${index < route.stops.length - 1 ? '<div class="w-0.5 h-16 bg-red-200"></div>' : ''}
+            </div>
+            <div class="flex-1 -mt-1">
+                <div class="font-medium">${stop.name}</div>
+                ${stop.time ? `
+                    <div class="text-sm text-gray-500 flex items-center gap-1 mt-1">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"/>
+                            <path d="M12 6v6l4 2"/>
+                        </svg>
+                        ${stop.time}
+                    </div>
+                ` : ''}
+            </div>
+        </div>
+    `).join('');
+}
+
+function goBack() {
+    currentShift = null;
+    document.getElementById('shiftsView').classList.remove('hidden');
+    document.getElementById('routeView').classList.add('hidden');
+    document.getElementById('backButton').classList.add('hidden');
+}
+
+
+        // Initialize
+        document.getElementById('backButton').addEventListener('click', goBack);
+        renderShiftsList();
+    </script>
+</body>
+</html>

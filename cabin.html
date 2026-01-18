@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KLU ONE Faculty Cabin Finder</title>
+    <link rel="stylesheet" href="cabin.css">
+     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Main Container -->
+    <div class="container">
+        <!-- Animated Background -->
+        <div class="animated-bg">
+            <div class="blob blob-1"></div>
+            <div class="blob blob-2"></div>
+            <div class="blob blob-3"></div>
+        </div>
+
+
+        <!-- Header -->
+        <header>
+            <div class="logo">
+                <div class="logo-icon">
+                    <i class="fas fa-university"></i>
+                </div>
+                <div class="logo-text">
+                    <h1 class="typing-animation">KLU ONE Cabin Finder</h1>
+                    <p>Find faculty locations instantly(deviations may occur)</p>
+                </div>
+            </div>
+            <div class="header-actions">
+                <a href="index.html" class="btn-icon" title="Home" style="text-decoration: none; color: inherit;">
+                    <i class="fas fa-home"></i>
+                </a>
+                <button id="themeToggle" class="btn-icon" aria-label="Toggle theme">
+                    <i class="fas fa-moon"></i>
+                </button>
+                <button id="resetBtn" class="btn-icon" aria-label="Reset">
+                    <i class="fas fa-redo-alt"></i>
+                </button>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main>
+            <div class="card main-card">
+                <!-- Tabs -->
+                <div class="tabs">
+                    <button class="tab active" data-tab="hod">
+                        <i class="fas fa-user-tie"></i>
+                        <span>HOD Search</span>
+                    </button>
+                    <button class="tab" data-tab="faculty">
+                        <i class="fas fa-users"></i>
+                        <span>Faculty Search</span>
+                    </button>
+                    <div class="tab-indicator"></div>
+                </div>
+
+                <!-- Tab Content -->
+                <div class="tab-content">
+                    <!-- HOD Search Tab -->
+                    <div id="hod-tab" class="tab-pane active">
+                        <h2 class="section-title">Search for Head of Department</h2>
+                        <p class="section-desc">Find HOD cabin by department name or HOD name</p>
+                        
+                        <div class="search-box">
+                            <div class="input-group">
+                                <i class="fas fa-search"></i>
+                                <input type="text" id="hodSearchInput" placeholder="Enter department name or HOD name">
+                            </div>
+                            <button id="hodSearchBtn" class="btn btn-primary">
+                                <span>Search</span>
+                                <i class="fas fa-arrow-right"></i>
+                            </button>
+                        </div>
+                        
+                        <div id="hodResults" class="results-container"></div>
+                    </div>
+                    
+                    <!-- Faculty Search Tab -->
+                    <div id="faculty-tab" class="tab-pane">
+                        <h2 class="section-title">Search for Faculty Member</h2>
+                        <p class="section-desc">Find faculty cabin by selecting department and entering name</p>
+                        
+                        <div class="form-group">
+                            <label for="deptSelect">Select Department</label>
+                            <div class="select-wrapper">
+                                <select id="deptSelect">
+                                    <option value="" selected disabled>-- Select Department --</option>
+                                    <!-- Options will be populated by JavaScript -->
+                                </select>
+                                <i class="fas fa-chevron-down"></i>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="facultySearchInput">Faculty Name</label>
+                            <div class="search-box">
+                                <div class="input-group">
+                                    <i class="fas fa-search"></i>
+                                    <input type="text" id="facultySearchInput" placeholder="Enter faculty name" disabled>
+                                </div>
+                                <button id="facultySearchBtn" class="btn btn-primary" disabled>
+                                    <span>Search</span>
+                                    <i class="fas fa-arrow-right"></i>
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div id="facultyResults" class="results-container"></div>
+                    </div>
+                </div>
+            </div>
+            <!-- Recent Searches -->
+            <div class="card recent-searches-card">
+                <div class="recent-searches-header">
+                    <h3>Recent Searches</h3>
+                    <button id="clearSearchesBtn" class="btn-text">
+                        <i class="fas fa-trash-alt"></i> Clear All
+                    </button>
+                </div>
+                <div id="recentSearches" class="recent-searches">
+                    <p class="empty-state">No recent searches</p>
+                </div>
+
+        </main>
+
+        <!-- Footer -->
+        <footer>
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <i class="fas fa-university"></i>
+                    <span>KLU ONE Cabin's</span>
+                </div>
+                <div class="footer-links">
+                    <a href="#">About</a>
+                    <a href="#">Contact</a>
+                    <a href="#">Help</a>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>&copy; <span id="currentYear"></span> KLU Faculty Cabin Finder. Developed By Sumanth</p>
+            </div>
+        </footer>
+
+        <!-- Loading Spinner -->
+        <div id="loadingSpinner" class="loading-spinner">
+            <div class="spinner">
+                <div class="double-bounce1"></div>
+                <div class="double-bounce2"></div>
+            </div>
+            <p>Searching...</p>
+        </div>
+    </div>
+
+    <script src="cabin.js"></script>
+</body>
+</html>
